@@ -20,15 +20,16 @@
 
     <style>
         :root {
-            --bg: #0a0a0c;
-            --surface: #16161a;
-            --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.5);
-            --accent: #f97316;
-            --text: #f8fafc;
-            --text-dim: #94a3b8;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg: #fdf8f5; /* Warm Cream (Tanuki Belly) */
+            --surface: #ffffff;
+            --primary: #7b5559; /* SonicEther Brown (Tanuki Fur) */
+            --primary-glow: rgba(123, 85, 89, 0.15);
+            --accent: #6b8e23; /* Leaf Green (Tanuki Magic) */
+            --accent-blue: #43627d; /* SonicEther Blue (Deep Sky) */
+            --text: #2e3335; /* SonicEther Dark Slate */
+            --text-dim: #5a6062;
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(123, 85, 89, 0.1);
         }
 
         * {
@@ -54,21 +55,21 @@
             height: 100%;
             z-index: -1;
             background: 
-                radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 40%);
-            filter: blur(80px);
+                radial-gradient(circle at 10% 10%, rgba(123, 85, 89, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(107, 142, 35, 0.08) 0%, transparent 40%);
+            filter: blur(60px);
         }
 
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(10, 10, 12, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(253, 248, 245, 0.8);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--glass-border);
             z-index: 1000;
         }
@@ -79,12 +80,12 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--text);
+            color: var(--primary);
             text-decoration: none;
         }
 
         .logo span {
-            color: var(--primary);
+            color: var(--accent);
         }
 
         .nav-links {
@@ -96,7 +97,7 @@
             color: var(--text-dim);
             text-decoration: none;
             transition: color 0.3s;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .nav-links a:hover {
@@ -104,14 +105,14 @@
         }
 
         section {
-            padding: 8rem 2rem;
-            max-width: 1200px;
+            padding: 6rem 2rem;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         /* Hero Section */
         .hero {
-            height: 100vh;
+            min-height: 90vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -120,12 +121,11 @@
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 10vw, 6rem);
+            font-size: clamp(3rem, 8vw, 5rem);
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            background: linear-gradient(to bottom right, #fff 50%, var(--text-dim));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary);
+            font-weight: 700;
         }
 
         .hero p {
@@ -139,8 +139,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 1rem 2.5rem;
-            border-radius: 99px;
+            padding: 0.8rem 2.2rem;
+            border-radius: 1rem;
             text-decoration: none;
             font-weight: 700;
             transition: all 0.3s;
@@ -150,12 +150,13 @@
         .btn-primary {
             background: var(--primary);
             color: white;
-            box-shadow: 0 0 20px var(--primary-glow);
+            box-shadow: 0 10px 20px rgba(123, 85, 89, 0.2);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px var(--primary-glow);
+            box-shadow: 0 15px 30px rgba(123, 85, 89, 0.3);
+            background: #633f44;
         }
 
         /* Features Grid */
@@ -167,20 +168,22 @@
         }
 
         .feature-card {
-            background: var(--glass);
+            background: var(--surface);
             border: 1px solid var(--glass-border);
             padding: 2.5rem;
             border-radius: 1.5rem;
-            transition: transform 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(123, 85, 89, 0.03);
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 12px 24px rgba(123, 85, 89, 0.08);
+            border-color: var(--primary);
         }
 
         .feature-icon {
-            color: var(--primary);
+            color: var(--accent);
             margin-bottom: 1.5rem;
         }
 
