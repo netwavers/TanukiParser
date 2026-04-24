@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TanukiParser - The Next-Gen Lyrics Parsing Engine</title>
+    <meta name="description" content="TanukiParserは、EBNFベースの強力な文法、Rustによる超高速処理、そしてPython/C#への柔軟なコード生成を兼ね備えた次世代歌詞解析エンジンです。">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- AOS.js -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --surface: #16161a;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --accent: #f97316;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background Decoration */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 20%, var(--primary-glow) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.1) 0%, transparent 40%);
+            filter: blur(80px);
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        section {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to bottom right, #fff 50%, var(--text-dim));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            border-radius: 99px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-icon {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-dim);
+        }
+
+        /* Code Section */
+        .code-container {
+            background: #011627;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--glass-border);
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+
+        pre {
+            margin-top: 1.5rem;
+            color: #d6deeb;
+        }
+
+        .keyword { color: #c792ea; }
+        .string { color: #ecc48d; }
+        .comment { color: #637777; font-style: italic; }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-dim);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav>
+        <a href="#" class="logo">
+            <i data-lucide="zap"></i>
+            Tanuki<span>Parser</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#code">Examples</a>
+            <a href="https://github.com/netwavers/TanukiParser" target="_blank">Docs</a>
+        </div>
+        <a href="https://github.com/netwavers/TanukiParser" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">GitHub</a>
+    </nav>
+
+    <section class="hero">
+        <h1 data-aos="fade-up">Precision Parsing,<br>Tanuki Speed.</h1>
+        <p data-aos="fade-up" data-aos-delay="100">
+            EBNFベースの文法で自由自在に歌詞を解析。RustのパワーとPythonの柔軟性をその手に。
+        </p>
+        <div data-aos="fade-up" data-aos-delay="200">
+            <a href="https://github.com/netwavers/TanukiParser" class="btn btn-primary">
+                <i data-lucide="github"></i>
+                GitHubでプロジェクトを見る
+            </a>
+        </div>
+    </section>
+
+    <section id="features">
+        <h2 style="font-size: 2.5rem; text-align: center; margin-bottom: 1rem;">Why TanukiParser?</h2>
+        <p style="text-align: center; color: var(--text-dim); margin-bottom: 4rem;">最先端のテクノロジーを、シンプルに提供します。</p>
+        
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up">
+                <i data-lucide="code-2" class="feature-icon"></i>
+                <h3>EBNF Powered</h3>
+                <p>Extended Backus-Naur Formを採用。複雑な歌詞構造も、直感的かつ厳密に定義可能です。</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <i data-lucide="cpu" class="feature-icon"></i>
+                <h3>Rust Core</h3>
+                <p>解析エンジンのコアはRustで記述。メモリ安全性を保ちつつ、ミリ秒単位の超高速処理を実現します。</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <i data-lucide="layers" class="feature-icon"></i>
+                <h3>Multi-Target</h3>
+                <p>PythonやC#へのコード生成に対応。既存のプロジェクトへ簡単に統合できます。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="code">
+        <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Clean Grammar.</h2>
+        <div class="code-container" data-aos="zoom-in">
+            <div class="code-header">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <pre>
+<span class="comment">(* lyrics.ebnf *)</span>
+<span class="keyword">root</span>    = { section };
+<span class="keyword">section</span> = [ header ] , { line };
+<span class="keyword">header</span>  = <span class="string">"["</span> , name , <span class="string">"]"</span> , newline;
+<span class="keyword">line</span>    = { word | timestamp } , newline;
+<span class="keyword">word</span>    = /[^\[\s]+/ ;
+            </pre>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Netwavers. Developed with ❤️ by Tanuki-chan.</p>
+        <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1.5rem;">
+            <a href="https://github.com/netwavers/TanukiParser" style="color: var(--text-dim);"><i data-lucide="github"></i></a>
+            <a href="#" style="color: var(--text-dim);"><i data-lucide="twitter"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    </script>
+</body>
+</html>
