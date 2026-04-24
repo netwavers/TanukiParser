@@ -1,0 +1,10 @@
+@namespace Test
+@class ErrorTest
+
+rule1 = "a" "b" 
+
+rule2 "c" | "d";
+
+rule3 = ( "e" | "f" ;
+
+rule4 = undefined_rule;

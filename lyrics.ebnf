@@ -1,0 +1,36 @@
+@namespace SonicEther
+@class LyricsParser
+
+@decl list results
+
+@token OPEN_BRACKET "["
+@token CLOSE_BRACKET "]"
+@token OPEN_PAREN "("
+@token CLOSE_PAREN ")"
+@token OPEN_PAREN_FULL "（"
+@token CLOSE_PAREN_FULL "）"
+@token CHORD_MARK "-"
+@token TEXT
+@token NL
+
+@@
+lyrics = ( element )*
+
+element = tag | text_content | other_char | newline
+
+# 各括弧の種類ごとにルールを分け、閉じ括弧を正しくマッチさせる
+tag = bracket_tag | paren_tag | full_paren_tag | chord_line
+
+bracket_tag = OPEN_BRACKET ( TEXT | OPEN_PAREN | CLOSE_PAREN | OPEN_PAREN_FULL | CLOSE_PAREN_FULL | CHORD_MARK )* CLOSE_BRACKET
+paren_tag = OPEN_PAREN ( TEXT | OPEN_BRACKET | CLOSE_BRACKET | OPEN_PAREN_FULL | CLOSE_PAREN_FULL | CHORD_MARK )* CLOSE_PAREN
+full_paren_tag = OPEN_PAREN_FULL ( TEXT | OPEN_BRACKET | CLOSE_BRACKET | OPEN_PAREN | CLOSE_PAREN | CHORD_MARK )* CLOSE_PAREN_FULL
+
+# ハイフンで始まるコード行などの特殊対応（暫定）
+chord_line = CHORD_MARK ( TEXT | OPEN_BRACKET | CLOSE_BRACKET | OPEN_PAREN | CLOSE_PAREN | OPEN_PAREN_FULL | CLOSE_PAREN_FULL )*
+
+text_content = TEXT @{ self.results.append(self.token.content) @}
+
+newline = NL @{ self.results.append("\n") @}
+
+# タグとして成立しなかった単独の記号は、そのままテキストとして出力する
+other_char = OPEN_BRACKET @{ self.results.append("[") @} | CLOSE_BRACKET @{ self.results.append("]") @} | OPEN_PAREN @{ self.results.append("(") @} | CLOSE_PAREN @{ self.results.append(")") @} | OPEN_PAREN_FULL @{ self.results.append("（") @} | CLOSE_PAREN_FULL @{ self.results.append("）") @} | CHORD_MARK @{ self.results.append("-") @}
